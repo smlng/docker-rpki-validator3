@@ -1,0 +1,28 @@
+version: '3'
+services:
+  rpki-base:
+    build: ./rpki-base
+    image: rpki-base
+  rpki-validator3:
+    build: ./rpki-validator
+    image: rpki-validator3
+    ports:
+      - ::1:8080:8080
+    volumes:
+      - ./rpki-validator/conf:/opt/docker/conf
+    depends_on:
+      - rpki-base
+    user: rpki
+    restart: always
+  rpki-rtr-server3:
+    build: ./rpki-rtr-server
+    image: rpki-rtr-server3
+    ports:
+      - 8323:8323
+    volumes:
+      - ./rpki-rtr-server/conf:/opt/docker/conf
+    depends_on:
+      - rpki-base
+      - rpki-validator3
+    user: rpki
+    restart: always
